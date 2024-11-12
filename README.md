@@ -91,14 +91,10 @@ epi_img = nib.load(r'Nifti/EPI_nii/kle_epi_nii/kle_epi_regis_EPI.nii.gz')
 │   │   ├── kle_epi_nii
 │   │   │   ├── kle_epi_epi_bold_tra_iso1.6mm_3_20241025134352_1401.json
 │   │   │   ├── kle_epi_epi_bold_tra_iso1.6mm_3_20241025134352_1401.nii.gz
-│   │   │   ├── kle_epi_epi_bold_tra_iso1.6mm_3_20241025134352_1401a.json
-│   │   │   ├── kle_epi_epi_bold_tra_iso1.6mm_3_20241025134352_1401a.nii.gz
 │   │   │   └── kle_epi_regis_EPI.nii.gz
 │   │   └── kle_epi_reference_nii
 │   │       ├── kle_epi_reference_epi_bold_tra_iso1.6mm_20241025132124_601.json
 │   │       ├── kle_epi_reference_epi_bold_tra_iso1.6mm_20241025132124_601.nii.gz
-│   │       ├── kle_epi_reference_epi_bold_tra_iso1.6mm_20241025132124_601a.json
-│   │       ├── kle_epi_reference_epi_bold_tra_iso1.6mm_20241025132124_601a.nii.gz
 │   │       └── kle_epi_reference_regis_EPI.nii.gz
 │   └── KLE_nii
 │       ├── kle_nii
