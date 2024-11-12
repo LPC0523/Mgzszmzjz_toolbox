@@ -2,7 +2,7 @@
 * **匀场常用处理工具及可视化脚本，V1包含B0场图计算、匀场电流优化及可视化、tSNR计算** 
 * **大多数程序依赖于调用FSL (https://fsl.fmrib.ox.ac.uk/fsl) 中的工具包，所以在使用本工具包之前请务必下载FSL，Windows下需要通过WSL来运行，具体教程网站中都有详细介绍。即装完WSL把这个文件夹放进去** 
 * **匀场电流优化及可视化来源于 (https://github.com/bughht/MRI_System_Design.git) 给HHT递茶orz。**  
-* **有一个 Jason 开源的 multi-coil shimming 工具 (https://rflab.martinos.org/index.php?title=Multi-coil_B0_shimming), 文件太大了，有需要多通道匀场的可以了解一下，是可以成功复现的。**
+* **有一个 Jason 开源的 multi-coil shimming 工具 (https://rflab.martinos.org/index.php?title=Multi-coil_B0_shimming)，文件太大了，有需要多通道匀场的可以了解一下，是可以成功复现的。**
 
 ---
 ## requierments.txt
@@ -35,13 +35,13 @@ pip install requirements.txt -r
 ## B0map_cal:包含存放Dicom数据和Nifti数据的文件夹、计算B0场和计算前后匀场差别的算法，**需注意，在运行前需要手动处理Dicom文件夹保留fieldmap序列扫描的图像，联影设备扫出来会得到三个图：相位图B0map、Echo1和Echo2的Magnitude field图，Echo1和Echo2可以当作结构像用于配准**
 
 
-* **B0_cal_algorithm.py** ：计算B0场的算法,只需修改下面这两个路径，将path指定到该次实验下
+* **B0_cal_algorithm.py** ：计算B0场的算法，只需修改下面这两个路径，将path指定到该次实验下
 ```
 # Paths for input DICOM and output NIfTI folders
 dicom_directory = r'Dicom/KLE'
 nifti_folder = r'Nifti/KLE_nii'
 ```
-* **measured_B0_offset**  ：计算前后匀场差别的算法,将以下路径换成后缀为'_regis_deltB0_ppm'的即可，
+* **measured_B0_offset**  ：计算前后匀场差别的算法，将以下路径换成后缀为'_regis_deltB0_ppm'的即可，
 ```
 sham_img = nib.load('Nifti/KLE_nii/kle_reference_nii/kle_reference_nii_regis_deltB0_ppm.nii.gz')
 shim_img = nib.load('Nifti/KLE_nii/kle_nii/kle_nii_regis_deltB0_ppm.nii.gz')
@@ -49,7 +49,7 @@ shim_img = nib.load('Nifti/KLE_nii/kle_nii/kle_nii_regis_deltB0_ppm.nii.gz')
 
 ## coil_current_optimization:计算线圈电流匀场的算法，具体可以看jason的MD
 ## tSNR_cor & tSNR_cal: 计算配准后的EPI图像的平均值除以标准差
-**和B0map一样的处理逻辑， 将实验文件夹换成EPI的即可，此外还需要在处理B0map时得到的仿射矩阵(mat结尾的)，最好是哪个做参考就用哪个的仿射矩阵**
+**和B0map一样的处理逻辑，将实验文件夹换成EPI的即可，此外还需要在处理B0map时得到的仿射矩阵(mat结尾的)，最好是哪个做参考就用哪个的仿射矩阵**
 * tSNR_cor: 修改路径即可
 
 ```
