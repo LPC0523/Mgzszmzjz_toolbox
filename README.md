@@ -41,7 +41,7 @@ pip install requirements.txt -r
 dicom_directory = r'Dicom/KLE'
 nifti_folder = r'Nifti/KLE_nii'
 ```
-* **measured_B0_offset**  ：计算前后匀场差别的算法,将以下路径换成'_regis_deltB0_ppm'的即可，
+* **measured_B0_offset**  ：计算前后匀场差别的算法,将以下路径换成后缀为'_regis_deltB0_ppm'的即可，
 ```
 sham_img = nib.load('Nifti/KLE_nii/kle_reference_nii/kle_reference_nii_regis_deltB0_ppm.nii.gz')
 shim_img = nib.load('Nifti/KLE_nii/kle_nii/kle_nii_regis_deltB0_ppm.nii.gz')
