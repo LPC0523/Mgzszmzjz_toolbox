@@ -1,7 +1,7 @@
 # Mgzszmzjz_toolbox(V1)（没有原理版）
-**匀场常用处理工具及可视化脚本，V1包含B0场图计算、匀场电流优化及可视化、tSNR计算** \
-**大多数程序依赖于调用FSL(https://fsl.fmrib.ox.ac.uk/fsl)的工具包，所以在使用本工具包之前请务必下载FSL，Windows下需要通过WSL来运行，具体教程网站中都有详细介绍** \
-**匀场电流优化及可视化来源于(https://github.com/bughht/MRI_System_Design.git) 给HHT递茶orz** \
+**匀场常用处理工具及可视化脚本，V1包含B0场图计算、匀场电流优化及可视化、tSNR计算**
+**大多数程序依赖于调用FSL(https://fsl.fmrib.ox.ac.uk/fsl)的工具包，所以在使用本工具包之前请务必下载FSL，Windows下需要通过WSL来运行，具体教程网站中都有详细介绍** 
+**匀场电流优化及可视化来源于(https://github.com/bughht/MRI_System_Design.git) 给HHT递茶orz** 
 **还有一个jason开源的multi-coil shimming工具(https://github.com/bughht/MRI_System_Design.git),文件太大了，有需多通道匀场的可以了解一下，是可以成功复现的**
 ## requierments.txt
 ```
