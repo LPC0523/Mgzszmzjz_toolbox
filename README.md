@@ -1,4 +1,4 @@
-# Mgzszmzjz_toolbox(V1)
+# Mgzszmzjz_toolbox(V2)
 * **匀场常用处理工具及可视化脚本，V1包含B0场图计算、匀场电流优化及可视化、tSNR计算** 
 * **大多数程序依赖于调用FSL (https://fsl.fmrib.ox.ac.uk/fsl) 中的工具包，所以在使用本工具包之前请务必下载FSL，Windows下需要通过WSL来运行，具体教程网站中都有详细介绍。即装完WSL把这个文件夹放进去** 
 * **匀场电流优化及可视化来源于 (https://github.com/bughht/MRI_System_Design.git) 给HHT递茶orz。**  
@@ -136,3 +136,5 @@ epi_img = nib.load(r'Nifti/EPI_nii/kle_epi_nii/kle_epi_regis_EPI.nii.gz')
 │ 
 └─── measured_B0_offset.py
 ```
+## Spherical Harmonics:
+在SH.ipynb中添加了球谐二阶的分解过程，其实就是调包（，输出各分量的系数并用直方图表示
