@@ -3,6 +3,7 @@
 * **大多数程序依赖于调用FSL (https://fsl.fmrib.ox.ac.uk/fsl) 中的工具包，所以在使用本工具包之前请务必下载FSL，Windows下需要通过WSL来运行，具体教程网站中都有详细介绍。即装完WSL把这个文件夹放进去** 
 * **匀场电流优化及可视化来源于 (https://github.com/bughht/MRI_System_Design.git) 给HHT递茶orz。**  
 * **有一个 Jason 开源的 multi-coil shimming 工具 (https://rflab.martinos.org/index.php?title=Multi-coil_B0_shimming) ，文件太大了，有需要多通道匀场的可以了解一下，是可以成功复现的。**
+
 2025.2.11: 更新了球谐函数评估的方法
 ---
 ## requierments.txt
