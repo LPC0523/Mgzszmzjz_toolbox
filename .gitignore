@@ -1,0 +1,23 @@
+# 医学影像数据文件
+*.nii.gz
+*.nii
+*.dcm
+
+# MATLAB 数据文件
+*.mat
+
+# macOS 系统隐藏文件
+.DS_Store
+
+# 编辑器相关配置和缓存
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+
+# 你已有的目录忽略
+shim_loop_optimization_V1/outputs/
+shim_loop_optimization_V1/supporting_data/
+
+# 你项目里其他大文件目录（举例，按需修改）
+infant_shimming/Nifti/

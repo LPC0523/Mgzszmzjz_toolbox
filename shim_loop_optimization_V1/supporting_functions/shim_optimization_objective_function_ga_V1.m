@@ -1,0 +1,211 @@
+
+% function [std_all_subj] = shim_optimization_objective_function_ga_V1(coils_used,unshimmed_all,mask_all,coil,max_current,total_current,varargin)
+
+function [std_all_subj] = shim_optimization_objective_function_ga_V1(coils_used,shim,varargin)
+
+% fields of data structure 'shim' that are used:
+%
+% shim.unshimmed
+% shim.mask
+% shim.coil
+% shim.max_current
+% shim.total_current
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% USER INPUTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% optional switch 'include_standard_shims' to include B0 offset and first 
+% and second order shims
+% set to -1 to exclude these terms
+% set to 0 to include only the B0 offset
+% set to 1 to include B0 offset and first order shims
+% set fo 2 t include B0 offset, first order, and second order shims
+include_standard_shims = 0;
+
+plot_switch = 1;   % set to 1 to enable field map plots, 0 to disable them
+slices_to_plot = [15 20 25 30];  % slice to plot
+plot_range = [-75 75];  % plot range in Hz
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+sep = filesep;   % determine if / or \ character is used for file paths
+
+
+if length(varargin) > 1
+    subj = (varargin{1})
+    num_subj = varargin{2};
+elseif length(varargin) == 1
+    subj = varargin{1};
+    num_subj = 1;
+else
+    subj = 1;
+    num_subj = 1;
+end
+
+if exist('num_subj','var') && num_subj > 1
+    multi_switch = 1;
+else
+    multi_switch = 0;
+end
+
+coil = shim.coil;   % define local variable with coil B0 profiles
+
+[nx, ny, nz] = size(coil(:,:,:,1));
+[XX,YY,ZZ] = ndgrid(linspace(-1,1,nx), linspace(-1,1,ny), linspace(-1,1,nz));
+
+% Create augmented shim basis by including standard shim fields if desired
+if include_standard_shims == 0;
+   coil(:,:,:,end+1) = 2000*(ones(size(coil(:,:,:,1)))); % scale this to be small so it does not contribute to shim.total_current constraint 
+   coils_used(end+1) = 1;
+elseif include_standard_shims == 1
+   coil(:,:,:,end+1) = 2000*(ones(size(coil(:,:,:,1)))); % scale this to be small so it does not contribute to shim.total_current constraint 
+   coil(:,:,:,end+1) = 1e6*XX;  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*YY;  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*ZZ;  % scale arbitrarily large
+   coils_used(end+1:end+4) = 1;
+elseif include_standard_shims == 2
+   coil(:,:,:,end+1) = 2000*(ones(size(coil(:,:,:,1)))); % scale this to be small so it does not contribute to shim.total_current constraint 
+   coil(:,:,:,end+1) = 1e6*XX;  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*YY;  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*ZZ;  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*(2.*XX.*YY);  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*(XX.^2 - YY.^2);  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*(ZZ.^2 - 1/2*(XX.^2 + YY.^2));  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*XX.*ZZ;  % scale arbitrarily large
+   coil(:,:,:,end+1) = 1e6*YY.*ZZ;     % scale arbitrarily large
+   coils_used(end+1:end+9) = 1;
+end
+
+nc = numel(coil(1,1,1,:));
+
+
+coil_temp = coil(:,:,:,logical(coils_used));  % select subset of coils to use for shim optimization
+
+for bb = 1:num_subj
+%%
+temp_unshimmed = shim.unshimmed(:,:,:,bb) - mean(mean(mean(shim.unshimmed(:,:,:,bb))));
+
+     [temp,amps_temp,temp_std_unshimmed,temp_std_shimmed] = perform_shim_V1(temp_unshimmed,shim.mask(:,:,:,bb),coil_temp,shim.max_current,shim.total_current);
+     
+        predicted = double(temp);
+        unshimmed = shim.unshimmed(:,:,:,bb);
+        mask = shim.mask(:,:,:,bb);
+        
+        
+        
+        amps_temp
+        
+        coils_used.'
+        pause(.1)
+        
+        
+        
+        ii=0;
+        for cc=1:nc
+           if coils_used(cc) == 1
+               ii=ii+1;
+               amps(cc) = amps_temp(ii);
+           else
+               amps(cc) = 0;
+           end
+        end
+        
+         figure(11),subplot(2,1,1),bar(amps),title(['current per channel, total = ',num2str(sum(abs(amps))),' amps']),
+         subplot(2,1,2),bar(coils_used),title('vector of coil elements used'),pause(.01)
+  
+%         rmse = sqrt(mean(mean(mean(((unshimmed(logical(shim.mask)) - predicted(logical(shim.mask))).^2))))); disp(['RMSE=',num2str(rmse)])
+        
+        std_before = calc_std_whole_brain(unshimmed, mask);
+        
+        std_single_subj = calc_std_whole_brain(predicted, mask);
+        
+        disp(['std before = ', num2str(std_before), ' and std after = ',num2str(std_single_subj)]);
+        
+        max_current = shim.max_current;   total_current = shim.total_current;
+        
+        disp('saving output...')
+        
+        if include_standard_shims == 0
+            coils_used = coils_used(1:end-1);
+            amps = amps(1:end-1);
+        elseif include_standard_shims == 1
+            coils_used = coils_used(1:end-4);
+            amps = amps(1:end-4);
+        elseif include_standard_shims == 2
+            coils_used = coils_used(1:end-9);
+            amps = amps(1:end-9);
+        end  
+        
+            save([shim.output_folder,'/shim_opt_output_SUBJECT=',num2str((subj(bb))),'_GLOBAL_62slice_',num2str(sum(coils_used)),'coils_',num2str(shim.max_current),'amps_',num2str(shim.total_current),'total.mat'],'coils_used','amps','unshimmed','std_single_subj','std_before','predicted','mask','max_current','total_current','include_standard_shims')
+         
+         if include_standard_shims == 0
+            coils_used(end+1) = 1;
+         elseif include_standard_shims == 1
+            coils_used(end+1:end+4) = 1;
+         elseif include_standard_shims == 2
+            coils_used(end+1:end+9) = 1;
+         end
+         
+         
+        
+        std_temp(bb) = std_single_subj;
+        
+        if plot_switch == 1
+                 figure(10),hold on
+                 for ss = 1:numel(slices_to_plot)
+                    subplot(3,numel(slices_to_plot),ss),imagesc(shim.mag(:,:,slices_to_plot(ss),bb)),axis image, axis off,title(['subj=',num2str(subj(bb)),' mag.']),colorbar
+                    subplot(3,numel(slices_to_plot),ss+numel(slices_to_plot)),imagesc(shim.unshimmed(:,:,slices_to_plot(ss),bb),plot_range),colorbar,title(['\DeltaB_0, subj=',num2str(subj(bb)),', std vol=',num2str(round(10*std_before)/10)]),colormap(jet),axis image,
+                            set(gca,'xtick',[],'ytick',[],'layer','bottom','box','on'),ylabel('2nd order shim')
+                            h = colorbar; set(get(h,'title'),'string','Hz'); 
+                    subplot(3,numel(slices_to_plot),ss+2*numel(slices_to_plot)),imagesc(predicted(:,:,slices_to_plot(ss)),plot_range),colorbar,title(['\DeltaB_0, subj=',num2str(subj(bb)),', std vol=',num2str(round(10*std_single_subj)/10)]),colormap(jet),axis image, 
+                            set(gca,'xtick',[],'ytick',[],'layer','bottom','box','on'),ylabel('MC shim')
+                            h = colorbar; set(get(h,'title'),'string','Hz'); 
+                 end
+                pause(.25)
+        end
+
+end
+
+
+% compute cost function
+disp(['STANDARD DEVIATIONS FOR SHIMMED SUBJECTS: ',num2str(std_temp)])
+
+% return the mean standard deviation over the global masked brain volume,
+% for all subjects
+std_all_subj = mean(std_temp);
+
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('******************************************* COMPLETED ITERATION *******************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+disp('***********************************************************************************************************')
+
+
+
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

@@ -1,0 +1,14 @@
+卷 Windows 的文件夹 PATH 列表
+卷序列号为 0A55-2B0B
+C:.
+├─Dicom
+│  └─KLE
+│      ├─kle
+│      │  ├─b0map_tra_3_B0Map_142317_1303
+│      │  ├─b0map_tra_3_Echo1_142316_1301
+│      │  └─b0map_tra_3_Echo2_142316_1302
+│      └─kle_reference
+│          ├─b0map_tra_B0Map_133232_503
+│          ├─b0map_tra_Echo1_133230_501
+│          └─b0map_tra_Echo2_133230_502
+└─Nifti
