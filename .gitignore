@@ -2,7 +2,8 @@
 *.nii.gz
 *.nii
 *.dcm
-
+*.zip
+*.IMA
 # MATLAB 数据文件
 *.mat
 
